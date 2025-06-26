@@ -46,9 +46,6 @@
                                     <a class="nav-link text-white" href="{{ route('recursos.create') }}">Recursos</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link text-white" href="{{ route('evento_recursos.create') }}">Evento Recursos</a>
-                                </li>
-                                <li class="nav-item">
                                     <a class="nav-link text-white" href="{{ route('asignarRecursos.create') }}">Asignar Recursos</a>
                                 </li>
                             @elseif(Auth::user()->rol === 'participante')
