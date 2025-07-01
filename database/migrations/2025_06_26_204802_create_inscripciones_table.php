@@ -12,12 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('inscripcions', function (Blueprint $table) {
-        $table->id();
-        $table->foreignId('usuario_id')->constrained('usuarios')->onDelete('cascade');
-        $table->foreignId('evento_id')->constrained('eventos')->onDelete('cascade');
-        $table->date('fecha');
-        $table->enum('estado', ['pendiente', 'confirmada', 'cancelada']);
-        $table->timestamps();
+            $table->id();
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('evento_id')->constrained('eventos')->onDelete('cascade');
+            $table->date('fecha');
+            $table->enum('estado', ['pendiente', 'confirmada', 'cancelada'])->default('pendiente');
+            $table->timestamps();
         });
     }
 

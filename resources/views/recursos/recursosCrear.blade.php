@@ -1,22 +1,43 @@
 @extends('layouts.app')
+
 @section('content')
-<div class="max-w-xl mx-auto mt-8 p-6 bg-white rounded-2xl shadow-xl">
-    <h2 class="text-2xl font-semibold mb-4">Registrar Recurso</h2>
-    <form action="#" method="POST">
-        @csrf
-        <div class="mb-4">
-            <label for="nombre" class="block font-medium">Nombre</label>
-            <input type="text" name="nombre" id="nombre" class="w-full border rounded-lg p-2">
-        </div>
-        <div class="mb-4">
-            <label for="tipo" class="block font-medium">Tipo</label>
-            <input type="text" name="tipo" id="tipo" class="w-full border rounded-lg p-2">
-        </div>
-        <div class="mb-6">
-            <label for="cantidad" class="block font-medium">Cantidad</label>
-            <input type="number" name="cantidad" id="cantidad" class="w-full border rounded-lg p-2">
-        </div>
-        <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700">Registrar</button>
-    </form>
+<div class="container mt-5">
+    <div class="bg-white p-4 p-md-5 rounded-4 shadow-lg col-md-8 mx-auto">
+        <h4 class="text-center fw-bold mb-4 text-uppercase">Registrar Recurso</h4>
+
+        @if(session('success'))
+            <div class="alert alert-success text-center">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        <form action="{{ route('recursos.store') }}" method="POST">
+            @csrf
+
+            <div class="mb-3">
+                <label for="nombre" class="form-label">Nombre</label>
+                <input type="text" name="nombre" id="nombre" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="descripcion" class="form-label">Descripción</label>
+                <textarea name="descripcion" id="descripcion" rows="3" class="form-control" required></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="tipo" class="form-label">Tipo</label>
+                <input type="text" name="tipo" id="tipo" class="form-control" required>
+            </div>
+
+            <div class="mb-4">
+                <label for="cantidad" class="form-label">Cantidad</label>
+                <input type="number" name="cantidad" id="cantidad" min="1" class="form-control" required>
+            </div>
+
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary px-5">Registrar</button>
+            </div>
+        </form>
+    </div>
 </div>
 @endsection

@@ -1,25 +1,41 @@
-<h1>Inscribirse a un evento</h1>
+@extends('layouts.app')
 
-<form action="/inscripciones/crear" method="POST">
-    @csrf
+@section('content')
+<div class="container d-flex justify-content-center mt-5">
+    <div class="bg-white p-5 rounded-4 shadow-lg w-100" style="max-width: 500px;">
+        <h4 class="text-center mb-4 text-uppercase fw-bold">Inscribirse a un evento</h4>
 
-    <h1>Seleccionar evento</h1>
-    <select name="evento_id">
-        @foreach($eventos as $evento)
-            <option value="{{$evento->id}}">{{$evento->titulo}}</option>
-        @endforeach
-        </select><br><br>
+        <form action="{{ route('inscripciones.store') }}" method="POST">
+            @csrf
 
-        <h1>Seleccionar fecha</h1>
-        <input type="date" name="fecha"><br>
+            <div class="mb-3">
+                <label for="evento_id" class="form-label fw-semibold">Evento</label>
+                <select name="evento_id" id="evento_id" class="form-select" required>
+                    <option disabled selected>Seleccionar evento</option>
+                    @foreach($eventos as $evento)
+                        <option value="{{ $evento->id }}">{{ $evento->titulo }}</option>
+                    @endforeach
+                </select>
+            </div>
 
-        <h1>Estado de inscripcion</h1>
-        <select name="estadoInscripcion">
-            <option value="pendiente">Pendiente</option>
-            <option value="aceptado">Aceptado</option>
-            <option value="rechazado">Rechazado</option>
-        </select><br><br>
+            <div class="mb-3">
+                <label for="fecha" class="form-label fw-semibold">Fecha</label>
+                <input type="date" name="fecha" id="fecha" class="form-control" required>
+            </div>
 
-        
-        <input type="submit" value="Crear Inscripcion">
-</form>
+            <div class="mb-4">
+                <label for="estadoInscripcion" class="form-label fw-semibold">Estado de inscripción</label>
+                <select name="estadoInscripcion" id="estadoInscripcion" class="form-select" required>
+                    <option value="pendiente">Pendiente</option>
+                    <option value="aceptado">Aceptado</option>
+                    <option value="rechazado">Rechazado</option>
+                </select>
+            </div>
+
+            <div class="d-flex justify-content-center">
+                <button type="submit" class="btn btn-primary px-4">Crear Inscripción</button>
+            </div>
+        </form>
+    </div>
+</div>
+@endsection
