@@ -18,7 +18,7 @@ class RecursoController extends Controller
     {
         $this->autorizarAdmin();
         $recursos = Recurso::all();
-        return view('recursos.recursoMostrar', compact('recursos')); 
+        return view('recursos.recursosMostrar', compact('recursos')); 
     }
 
     // Mostrar formulario para crear recurso

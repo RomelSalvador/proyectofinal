@@ -45,9 +45,21 @@
                             <li class="nav-item">
                                 <a class="nav-link text-white {{ Request::is('asignarRecursos/create') ? 'fw-bold' : '' }}" href="{{ route('asignarRecursos.create') }}">Asignar Recursos</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white {{ Request::is('recursos/create') ? 'fw-bold' : '' }}" href="{{ route('inscripciones.index') }}">Mostrar Inscripciones</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white {{ Request::is('recursos/create') ? 'fw-bold' : '' }}" href="{{ route('eventos.index') }}">Mostrar Eventos</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white {{ Request::is('recursos/create') ? 'fw-bold' : '' }}" href="{{ route('recursos.index') }}">Mostrar Recursos</a>
+                            </li>
                         @elseif(Auth::user()->rol === 'participante')
                             <li class="nav-item">
                                 <a class="nav-link text-white {{ Request::is('inscripciones/create') ? 'fw-bold' : '' }}" href="{{ route('inscripciones.create') }}">Inscribirse a Evento</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white {{ Request::is('inscripciones/create') ? 'fw-bold' : '' }}" href="{{ route('eventos.index') }}">Eventos Disponibles</a>
                             </li>
                         @endif
                     @endauth
