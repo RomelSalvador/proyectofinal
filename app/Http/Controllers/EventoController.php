@@ -49,6 +49,36 @@ class EventoController extends Controller
         return redirect()->route('eventos.index')->with('success', 'Evento creado correctamente.');
     }
 
+    // Mostrar formulario para editar evento
+    public function edit($id)
+    {
+    $this->autorizarAdmin();
+    $evento = Evento::findOrFail($id);
+    return view('eventos.eventosEditar', compact('evento'));
+    }
+
+    // Guardar cambios del evento
+    public function update(Request $request, $id)
+    {
+    $this->autorizarAdmin();
+    $request->validate([
+        'titulo' => 'required|string|max:255',
+        'descripcion' => 'required',
+        'tipo' => 'required|in:cultural,deportivo,social',
+        'fecha' => 'required|date',
+        'hora' => 'required',
+        'ubicacion' => 'required|string|max:255',
+        'aforo' => 'required|integer|min:1',
+        'estado' => 'required|in:activo,inactivo',
+    ]);
+
+    $evento = Evento::findOrFail($id);
+    $evento->update($request->all());
+
+    return redirect()->route('eventos.index')->with('success', 'Evento actualizado correctamente.');
+    }
+
+
     // eliminar evento 
 
     public function destroy($id){

@@ -38,6 +38,9 @@
                             <td>{{ $evento->aforo }}</td>
                             <td class="text-capitalize">{{ $evento->estado }}</td>
                             <td>
+                                <a href="{{ route('eventos.edit', $evento->id) }}" class="btn btn-sm btn-primary px-3 rounded-pill me-1">
+                                    Editar
+                                </a>
                                 <form action="{{ route('eventos.destroy', $evento->id) }}" method="POST" onsubmit="return confirm('¿Eliminar este evento?')" style="display:inline;">
                                     @csrf
                                     @method('DELETE')

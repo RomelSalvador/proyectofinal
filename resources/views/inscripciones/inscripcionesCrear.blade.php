@@ -5,6 +5,13 @@
     <div class="bg-white p-5 rounded-4 shadow-lg w-100" style="max-width: 500px;">
         <h4 class="text-center mb-4 text-uppercase fw-bold">Inscribirse a un evento</h4>
 
+        {{-- Mostrar mensajes de error --}}
+        @if(session('error'))
+            <div class="alert alert-danger text-center">
+                {{ session('error') }}
+            </div>
+        @endif
+
         <form action="{{ route('inscripciones.store') }}" method="POST">
             @csrf
 
