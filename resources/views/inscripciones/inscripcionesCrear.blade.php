@@ -24,16 +24,16 @@
             </div>
 
             <div class="mb-4">
-                <label for="estadoInscripcion" class="form-label fw-semibold">Estado de inscripción</label>
-                <select name="estadoInscripcion" id="estadoInscripcion" class="form-select" required>
+                <label for="estado" class="form-label fw-semibold">Estado de inscripción</label>
+                <select name="estado" id="estado" class="form-select" required>
                     <option value="pendiente">Pendiente</option>
-                    <option value="aceptado">Aceptado</option>
-                    <option value="rechazado">Rechazado</option>
+                    <option value="confirmada">Confirmada</option>
+                    <option value="cancelada">Cancelada</option>
                 </select>
             </div>
 
             <div class="d-flex justify-content-center">
-                <button type="submit" class="btn btn-primary px-4">Crear Inscripción</button>
+                <button type="submit" class="btn btn-primary px-4">Inscribirse</button>
             </div>
         </form>
     </div>

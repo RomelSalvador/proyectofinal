@@ -49,8 +49,24 @@ class EventoController extends Controller
         return redirect()->route('eventos.index')->with('success', 'Evento creado correctamente.');
     }
 
-    private function autorizarAdmin()
-    {
+    // eliminar evento 
+
+    public function destroy($id){
+    $this->autorizarAdmin();
+
+    $evento = Evento::findOrFail($id);
+    $evento->delete();
+
+    return redirect()->route('eventos.index')->with('success', 'Evento eliminado correctamente.');
+    }
+
+    public function listarDisponibles(){
+    
+    $eventos = Evento::where('estado', 'activo')->get();
+    return view('eventos.eventosDisponibles', compact('eventos'));
+    }
+
+    private function autorizarAdmin(){
         if (Auth::user()->rol !== 'administrador') {
             abort(403, 'Acceso no autorizado.');
         }

@@ -38,10 +38,12 @@
                             <td>{{ $evento->aforo }}</td>
                             <td class="text-capitalize">{{ $evento->estado }}</td>
                             <td>
-                                <form action="{{ route('eventos.destroy', $evento->id) }}" method="POST" onsubmit="return confirm('¿Eliminar este evento?')">
+                                <form action="{{ route('eventos.destroy', $evento->id) }}" method="POST" onsubmit="return confirm('¿Eliminar este evento?')" style="display:inline;">
                                     @csrf
                                     @method('DELETE')
-                                    <button class="btn btn-sm btn-danger px-3 rounded-pill">Eliminar</button>
+                                    <button type="submit" class="btn btn-sm btn-danger px-3 rounded-pill">
+                                        Eliminar
+                                    </button>
                                 </form>
                             </td>
                         </tr>

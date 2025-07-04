@@ -9,6 +9,9 @@
 
     <title>@yield('title', config('app.name', 'Gestión de Eventos'))</title>
 
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
     <!-- Fuentes -->
     <link rel="dns-prefetch" href="//fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
@@ -37,16 +40,13 @@
                                 <a class="nav-link text-white {{ Request::is('eventos/create') ? 'fw-bold' : '' }}" href="{{ route('eventos.create') }}">Eventos</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-white {{ Request::is('inscripciones/create') ? 'fw-bold' : '' }}" href="{{ route('inscripciones.create') }}">Inscripciones</a>
+                                <a class="nav-link text-white {{ Request::is('inscripciones/mostrar') ? 'fw-bold' : '' }}" href="{{ route('inscripciones.index') }}">Ver Inscripciones</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link text-white {{ Request::is('recursos/create') ? 'fw-bold' : '' }}" href="{{ route('recursos.create') }}">Recursos</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link text-white {{ Request::is('asignarRecursos/create') ? 'fw-bold' : '' }}" href="{{ route('asignarRecursos.create') }}">Asignar Recursos</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-white {{ Request::is('recursos/create') ? 'fw-bold' : '' }}" href="{{ route('inscripciones.index') }}">Mostrar Inscripciones</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link text-white {{ Request::is('recursos/create') ? 'fw-bold' : '' }}" href="{{ route('eventos.index') }}">Mostrar Eventos</a>
@@ -56,11 +56,12 @@
                             </li>
                         @elseif(Auth::user()->rol === 'participante')
                             <li class="nav-item">
-                                <a class="nav-link text-white {{ Request::is('inscripciones/create') ? 'fw-bold' : '' }}" href="{{ route('inscripciones.create') }}">Inscribirse a Evento</a>
+                            <a class="nav-link text-white {{ Request::is('eventos/disponibles') ? 'fw-bold' : '' }}" href="{{ route('eventos.disponibles') }}">Eventos Disponibles</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-white {{ Request::is('inscripciones/create') ? 'fw-bold' : '' }}" href="{{ route('eventos.index') }}">Eventos Disponibles</a>
+                                <a class="nav-link text-white {{ Request::is('inscripciones/mostrar') ? 'fw-bold' : '' }}" href="{{ route('inscripciones.index') }}">Eventos a los que estoy inscrito </a>
                             </li>
+
                         @endif
                     @endauth
                 </ul>
@@ -80,14 +81,14 @@
                         @endif
                     @else
                         <li class="nav-item dropdown">
-                            <a id="navbarDropdown" class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown">
-                                {{ Auth::user()->name }}
+                            <a id="navbarDropdown" class="nav-link dropdown-toggle text-white d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-person-circle fs-4"></i> {{ Auth::user()->name }}
                             </a>
                             <div class="dropdown-menu dropdown-menu-end">
                                 {{-- <a class="dropdown-item" href="#">Mi perfil</a> --}}
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item text-danger" href="{{ route('logout') }}"
-                                   onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                     Cerrar sesión
                                 </a>
                                 <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">

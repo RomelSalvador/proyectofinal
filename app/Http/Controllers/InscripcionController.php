@@ -14,49 +14,124 @@ class InscripcionController extends Controller
         $this->middleware('auth');
     }
 
-    // Mostrar todas las inscripciones
-    public function index()
-    {
-        if (Auth::user()->rol === 'administrador') {
-            $inscripciones = Inscripcion::with('user', 'evento')->get();
-        } else {
-            $inscripciones = Inscripcion::with('evento')
-                ->where('user_id', Auth::id())
-                ->get();
-        }
+    // Mostrar inscripciones 
+    public function index(){
 
-        return view('inscripciones.inscripcionesMostrar', compact('inscripciones')); 
+    if (Auth::user()->rol === 'administrador') {
+        $inscripciones = Inscripcion::with('user', 'evento')->get();
+        return view('inscripciones.inscripcionesVer', compact('inscripciones'));
     }
 
-    // Mostrar formulario para inscribirse
+    $inscripciones = Inscripcion::with('evento')
+        ->where('user_id', Auth::id())
+        ->get();
+
+    return view('inscripciones.inscripcionesMostrar', compact('inscripciones'));
+    }
+
+    // Formulario para inscribirse
     public function create()
     {
+        $this->autorizarParticipante();
+
         $eventos = Evento::where('estado', 'activo')->get();
-        return view('inscripciones.inscripcionesCrear', compact('eventos')); 
+        return view('inscripciones.inscripcionesCrear', compact('eventos'));
     }
 
     // Guardar inscripción
-    public function store(Request $request)
+    public function store(Request $request){
+
+    $this->autorizarParticipante();
+    $request->validate([
+        'evento_id' => 'required|exists:eventos,id',
+        'estado' => 'required|in:pendiente,confirmada,cancelada', 
+    ]);
+
+    $yaInscrito = Inscripcion::where('user_id', Auth::id())
+        ->where('evento_id', $request->evento_id)
+        ->exists();
+
+    if ($yaInscrito) {
+        return redirect()->back()->with('error', 'Ya estás inscrito en este evento.');
+    }
+
+    Inscripcion::create([
+        'user_id' => Auth::id(),
+        'evento_id' => $request->evento_id,
+        'fecha' => now()->toDateString(),
+        'estado' => $request->estado, 
+    ]);
+
+    return redirect()->route('inscripciones.index')->with('success', 'Inscripción registrada.');
+    }
+
+
+    // Formulario para editar inscripción
+    public function edit($id)
     {
-        $request->validate([
-            'evento_id' => 'required|exists:eventos,id',
-        ]);
+        $this->autorizarParticipante();
 
-        $yaInscrito = Inscripcion::where('user_id', Auth::id())
-            ->where('evento_id', $request->evento_id)
-            ->exists();
+        $inscripcion = Inscripcion::findOrFail($id);
 
-        if ($yaInscrito) {
-            return redirect()->back()->with('error', 'Ya estás inscrito en este evento.');
+        if (Auth::id() !== $inscripcion->user_id) {
+            abort(403, 'Acceso no autorizado.');
         }
 
-        Inscripcion::create([
-            'user_id' => Auth::id(),
-            'evento_id' => $request->evento_id,
-            'fecha' => now()->toDateString(),
-            'estado' => 'pendiente',
+        return view('inscripciones.inscripcionesEditar', compact('inscripcion'));
+    }
+
+    // Guardar edición
+    public function update(Request $request, $id)
+    {
+        $this->autorizarParticipante();
+
+        $inscripcion = Inscripcion::findOrFail($id);
+
+        if (Auth::id() !== $inscripcion->user_id) {
+            abort(403, 'Acceso no autorizado.');
+        }
+
+        $request->validate([
+            'fecha' => 'required|date',
+            'estado' => 'required|in:pendiente,confirmada,cancelada', 
         ]);
 
-        return redirect()->route('inscripciones.index')->with('success', 'Inscripción registrada.');
+        $inscripcion->update([
+            'fecha' => $request->fecha,
+            'estado' => $request->estado,
+        ]);
+
+        return redirect()->route('inscripciones.index')->with('success', 'Inscripción actualizada.');
+    }
+
+    // Cancelar inscripción
+    public function destroy($id)
+    {
+        $this->autorizarParticipante();
+
+        $inscripcion = Inscripcion::findOrFail($id);
+
+        if (Auth::id() !== $inscripcion->user_id) {
+            abort(403, 'Acceso no autorizado.');
+        }
+
+        $inscripcion->delete();
+        return redirect()->route('inscripciones.index')->with('success', 'Inscripción cancelada.');
+    }
+
+    // Métodos de autorización 
+
+    private function autorizarAdmin()
+    {
+        if (Auth::user()->rol !== 'administrador') {
+            abort(403, 'Acceso no autorizado.');
+        }
+    }
+
+    private function autorizarParticipante()
+    {
+        if (Auth::user()->rol !== 'participante') {
+            abort(403, 'Acceso no autorizado.');
+        }
     }
 }
