@@ -35,7 +35,7 @@
             </div>
 
             <div class="text-center">
-                <button type="submit" class="btn btn-primary px-5">Registrar</button>
+                <button type="submit" class="btn btn-primary px-5">Guardar</button>
             </div>
         </form>
     </div>

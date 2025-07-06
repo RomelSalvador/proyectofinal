@@ -13,7 +13,6 @@ class EventoController extends Controller
         $this->middleware('auth');
     }
 
-    // Mostrar todos los eventos 
     public function index()
     {
         $this->autorizarAdmin();
@@ -21,14 +20,12 @@ class EventoController extends Controller
         return view('eventos.eventosMostrar', compact('eventos')); 
     }
 
-    // Mostrar formulario para crear evento
     public function create()
     {
         $this->autorizarAdmin();
         return view('eventos.eventosCrear'); 
     }
 
-    // Guardar nuevo evento
     public function store(Request $request)
     {
         $this->autorizarAdmin();
@@ -41,62 +38,97 @@ class EventoController extends Controller
             'hora' => 'required',
             'ubicacion' => 'required|string|max:255',
             'aforo' => 'required|integer|min:1',
+            'precio' => 'required|numeric|min:0',
             'estado' => 'required|in:activo,inactivo',
+            'imagen' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
-        Evento::create($request->all());
+        $rutaImagen = null;
+        if ($request->hasFile('imagen')) {
+            $rutaImagen = $request->file('imagen')->store('eventos', 'public');
+        }
+
+        Evento::create([
+            'titulo' => $request->titulo,
+            'descripcion' => $request->descripcion,
+            'tipo' => $request->tipo,
+            'fecha' => $request->fecha,
+            'hora' => $request->hora,
+            'ubicacion' => $request->ubicacion,
+            'aforo' => $request->aforo,
+            'precio' => $request->precio,
+            'estado' => $request->estado,
+            'imagen' => $rutaImagen,
+        ]);
 
         return redirect()->route('eventos.index')->with('success', 'Evento creado correctamente.');
     }
 
-    // Mostrar formulario para editar evento
     public function edit($id)
     {
-    $this->autorizarAdmin();
-    $evento = Evento::findOrFail($id);
-    return view('eventos.eventosEditar', compact('evento'));
+        $this->autorizarAdmin();
+        $evento = Evento::findOrFail($id);
+        return view('eventos.eventosEditar', compact('evento'));
     }
 
-    // Guardar cambios del evento
     public function update(Request $request, $id)
     {
-    $this->autorizarAdmin();
-    $request->validate([
-        'titulo' => 'required|string|max:255',
-        'descripcion' => 'required',
-        'tipo' => 'required|in:cultural,deportivo,social',
-        'fecha' => 'required|date',
-        'hora' => 'required',
-        'ubicacion' => 'required|string|max:255',
-        'aforo' => 'required|integer|min:1',
-        'estado' => 'required|in:activo,inactivo',
-    ]);
+        $this->autorizarAdmin();
 
-    $evento = Evento::findOrFail($id);
-    $evento->update($request->all());
+        $request->validate([
+            'titulo' => 'required|string|max:255',
+            'descripcion' => 'required',
+            'tipo' => 'required|in:cultural,deportivo,social',
+            'fecha' => 'required|date',
+            'hora' => 'required',
+            'ubicacion' => 'required|string|max:255',
+            'aforo' => 'required|integer|min:1',
+            'precio' => 'required|numeric|min:0',
+            'estado' => 'required|in:activo,inactivo',
+            'imagen' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
 
-    return redirect()->route('eventos.index')->with('success', 'Evento actualizado correctamente.');
+        $evento = Evento::findOrFail($id);
+
+        $rutaImagen = $evento->imagen;
+        if ($request->hasFile('imagen')) {
+            $rutaImagen = $request->file('imagen')->store('eventos', 'public');
+        }
+
+        $evento->update([
+            'titulo' => $request->titulo,
+            'descripcion' => $request->descripcion,
+            'tipo' => $request->tipo,
+            'fecha' => $request->fecha,
+            'hora' => $request->hora,
+            'ubicacion' => $request->ubicacion,
+            'aforo' => $request->aforo,
+            'precio' => $request->precio,
+            'estado' => $request->estado,
+            'imagen' => $rutaImagen,
+        ]);
+
+        return redirect()->route('eventos.index')->with('success', 'Evento actualizado correctamente.');
     }
 
+    public function destroy($id)
+    {
+        $this->autorizarAdmin();
 
-    // eliminar evento 
+        $evento = Evento::findOrFail($id);
+        $evento->delete();
 
-    public function destroy($id){
-    $this->autorizarAdmin();
-
-    $evento = Evento::findOrFail($id);
-    $evento->delete();
-
-    return redirect()->route('eventos.index')->with('success', 'Evento eliminado correctamente.');
+        return redirect()->route('eventos.index')->with('success', 'Evento eliminado correctamente.');
     }
 
-    public function listarDisponibles(){
-    
-    $eventos = Evento::where('estado', 'activo')->get();
-    return view('eventos.eventosDisponibles', compact('eventos'));
+    public function listarDisponibles()
+    {
+        $eventos = Evento::where('estado', 'activo')->get();
+        return view('eventos.eventosDisponibles', compact('eventos'));
     }
 
-    private function autorizarAdmin(){
+    private function autorizarAdmin()
+    {
         if (Auth::user()->rol !== 'administrador') {
             abort(403, 'Acceso no autorizado.');
         }

@@ -15,6 +15,7 @@
             <table class="table table-bordered table-hover align-middle text-center">
                 <thead class="table-primary text-uppercase">
                     <tr>
+                        <th>Imagen</th>
                         <th>#</th>
                         <th>Título</th>
                         <th>Tipo</th>
@@ -22,6 +23,7 @@
                         <th>Hora</th>
                         <th>Ubicación</th>
                         <th>Aforo</th>
+                        <th>Precio</th>
                         <th>Estado</th>
                         <th>Acciones</th>
                     </tr>
@@ -29,6 +31,13 @@
                 <tbody>
                     @forelse($eventos as $evento)
                         <tr>
+                            <td>
+                                @if($evento->imagen)
+                                    <img src="{{ asset('storage/eventos/' . $evento->imagen) }}" alt="Imagen Evento" width="110" height="70" class="rounded">
+                                @else
+                                    <span class="text-muted">Sin imagen</span>
+                                @endif
+                            </td>
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $evento->titulo }}</td>
                             <td class="text-capitalize">{{ $evento->tipo }}</td>
@@ -36,6 +45,7 @@
                             <td>{{ $evento->hora }}</td>
                             <td>{{ $evento->ubicacion }}</td>
                             <td>{{ $evento->aforo }}</td>
+                            <td>S/ {{ number_format($evento->precio, 2) }}</td>
                             <td class="text-capitalize">{{ $evento->estado }}</td>
                             <td>
                                 <a href="{{ route('eventos.edit', $evento->id) }}" class="btn btn-sm btn-primary px-3 rounded-pill me-1">
@@ -52,7 +62,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="9" class="text-muted text-center py-3">No hay eventos registrados.</td>
+                            <td colspan="11" class="text-muted text-center py-3">No hay eventos registrados.</td>
                         </tr>
                     @endforelse
                 </tbody>

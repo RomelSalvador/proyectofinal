@@ -15,9 +15,21 @@
             </div>
         @endif
 
-        <form action="{{ route('eventos.update', $evento->id) }}" method="POST">
+        <form action="{{ route('eventos.update', $evento->id) }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')
+
+            @if($evento->imagen)
+                <div class="mb-3 text-center">
+                    <img src="{{ asset('storage/eventos/' . $evento->imagen) }}" alt="Imagen actual" class="img-fluid rounded" style="max-height: 250px;">
+                    <p class="mt-2 text-muted">Imagen actual</p>
+                </div>
+            @endif
+
+            <div class="mb-3">
+                <label for="imagen" class="form-label fw-semibold">Cambiar Imagen (opcional)</label>
+                <input type="file" name="imagen" id="imagen" class="form-control">
+            </div>
 
             <div class="mb-3">
                 <label for="titulo" class="form-label fw-semibold">Título</label>
@@ -58,6 +70,11 @@
                 <input type="number" name="aforo" id="aforo" class="form-control" value="{{ old('aforo', $evento->aforo) }}" min="1" required>
             </div>
 
+            <div class="mb-3">
+                <label for="precio" class="form-label fw-semibold">Precio (S/)</label>
+                <input type="number" name="precio" id="precio" class="form-control" value="{{ old('precio', $evento->precio) }}" step="0.01" min="0" required>
+            </div>
+
             <div class="mb-4">
                 <label for="estado" class="form-label fw-semibold">Estado</label>
                 <select name="estado" id="estado" class="form-select" required>
@@ -68,7 +85,7 @@
 
             <div class="text-center mt-4">
                 <a href="{{ route('eventos.index') }}" class="btn btn-warning rounded-pill px-4 me-2">Cancelar</a>
-                <button type="submit" class="btn btn-primary rounded-pill px-4 ms-2">Guardar Cambios</button>
+                <button type="submit" class="btn btn-primary rounded-pill px-4 ms-2">Actualizar</button>
             </div>
         </form>
     </div>

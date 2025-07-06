@@ -6,6 +6,8 @@ use App\Models\Inscripcion;
 use App\Models\Evento;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Notifications\NotificacionInscripcionEvento;
+
 
 class InscripcionController extends Controller
 {
@@ -40,44 +42,47 @@ class InscripcionController extends Controller
 
     // Guardar inscripción
     public function store(Request $request)
-    {
-        $this->autorizarParticipante();
+{
+    $this->autorizarParticipante();
 
-        $request->validate([
-            'evento_id' => 'required|exists:eventos,id',
-        ]);
+    $request->validate([
+        'evento_id' => 'required|exists:eventos,id',
+    ]);
 
-        $evento = Evento::findOrFail($request->evento_id);
+    $evento = Evento::findOrFail($request->evento_id);
 
-        // Verificar si el evento está activo
-        if ($evento->estado !== 'activo') {
-            return redirect()->back()->with('error', 'El evento no está disponible para inscripciones.');
-        }
+    // Verificar si el evento está activo
+    if ($evento->estado !== 'activo') {
+        return redirect()->back()->with('error', 'El evento no está disponible para inscripciones.');
+    }
 
-        // Verificar si el aforo está completo
-        $inscritos = Inscripcion::where('evento_id', $evento->id)->count();
-        if ($inscritos >= $evento->aforo) {
-            return redirect()->back()->with('error', 'El aforo del evento ya está completo.');
-        }
+    // Verificar si el aforo está completo
+    $inscritos = Inscripcion::where('evento_id', $evento->id)->count();
+    if ($inscritos >= $evento->aforo) {
+        return redirect()->back()->with('error', 'El aforo del evento ya está completo.');
+    }
 
-        // Verificar si el usuario ya está inscrito
-        $yaInscrito = Inscripcion::where('user_id', Auth::id())
-            ->where('evento_id', $evento->id)
-            ->exists();
+    // Verificar si el usuario ya está inscrito
+    $yaInscrito = Inscripcion::where('user_id', Auth::id())
+        ->where('evento_id', $evento->id)
+        ->exists();
 
-        if ($yaInscrito) {
-            return redirect()->back()->with('error', 'Ya estás inscrito en este evento.');
-        }
+    if ($yaInscrito) {
+        return redirect()->back()->with('error', 'Ya estás inscrito en este evento.');
+    }
 
-        // Registrar inscripción
-        Inscripcion::create([
-            'user_id' => Auth::id(),
-            'evento_id' => $evento->id,
-            'fecha' => now()->toDateString(),
-            'estado' => 'pendiente',
-        ]);
+    // Registrar inscripción
+    Inscripcion::create([
+        'user_id' => Auth::id(),
+        'evento_id' => $evento->id,
+        'fecha' => now()->toDateString(),
+        'estado' => 'pendiente',
+    ]);
 
-        return redirect()->route('inscripciones.index')->with('success', 'Inscripción registrada.');
+
+    Auth::user()->notify(new NotificacionInscripcionEvento($evento));
+
+        return redirect()->route('inscripciones.index')->with('success', 'Inscripción registrada. Revisa tus notificaciones.');
     }
 
     // Formulario para editar inscripción

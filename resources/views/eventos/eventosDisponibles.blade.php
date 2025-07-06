@@ -11,6 +11,13 @@
             @foreach($eventos as $evento)
                 <div class="col-md-4 mb-4">
                     <div class="card h-100 shadow">
+                        @if($evento->imagen)
+                            <img src="{{ asset('storage/' . $evento->imagen) }}" 
+                                alt="Imagen del evento" 
+                                class="card-img-top" 
+                                style="height: 350px; width: 100%; object-fit: cover; border-top-left-radius: 0.5rem; border-top-right-radius: 0.5rem;">
+                        @endif
+
                         <div class="card-body">
                             <h5 class="card-title">{{ $evento->titulo }}</h5>
                             <p class="card-text">{{ $evento->descripcion }}</p>
@@ -19,6 +26,7 @@
                             <p><strong>Hora:</strong> {{ $evento->hora }}</p>
                             <p><strong>Ubicación:</strong> {{ $evento->ubicacion }}</p>
                             <p><strong>Aforo:</strong> {{ $evento->aforo }}</p>
+                            <p><strong>Precio:</strong> S/ {{ number_format($evento->precio, 2) }}</p>
                             <a href="{{ route('inscripciones.create') }}" class="btn btn-primary">Inscribirse</a>
                         </div>
                     </div>

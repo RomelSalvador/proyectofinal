@@ -40,11 +40,19 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/inscripciones/{id}', [InscripcionController::class, 'destroy'])->name('inscripciones.destroy');
 
     // RECURSOS 
-    Route::get('/recursos/create', [RecursoController::class, 'create'])->name('recursos.create'); 
-    Route::post('/recursos', [RecursoController::class, 'store'])->name('recursos.store');         
     Route::get('/recursos/mostrar', [RecursoController::class, 'index'])->name('recursos.index');  
+    Route::get('/recursos/create', [RecursoController::class, 'create'])->name('recursos.create'); 
+    Route::post('/recursos', [RecursoController::class, 'store'])->name('recursos.store'); 
+    Route::get('/recursos/{id}/edit', [RecursoController::class, 'edit'])->name('recursos.edit'); 
+    Route::put('/recursos/{id}', [RecursoController::class, 'update'])->name('recursos.update'); 
+    Route::delete('/recursos/{id}', [RecursoController::class, 'destroy'])->name('recursos.destroy'); 
 
-    // ASIGNAR RECURSOS 
-    Route::get('/asignarRecursos/create', [AsignarRecursoController::class, 'create'])->name('asignarRecursos.create'); 
-    Route::post('/asignarRecursos', [AsignarRecursoController::class, 'store'])->name('asignarRecursos.store');         
+    // ASIGNAR RECURSOS
+    Route::get('/asignarRecursos', [AsignarRecursoController::class, 'index'])->name('asignarRecursos.index');
+    Route::get('/asignarRecursos/create', [AsignarRecursoController::class, 'create'])->name('asignarRecursos.create');
+    Route::post('/asignarRecursos', [AsignarRecursoController::class, 'store'])->name('asignarRecursos.store');
+    Route::get('/asignarRecursos/{evento_id}/{recurso_id}/edit', [AsignarRecursoController::class, 'edit'])->name('asignarRecursos.edit');
+    Route::put('/asignarRecursos/{evento_id}/{recurso_id}', [AsignarRecursoController::class, 'update'])->name('asignarRecursos.update');
+    Route::delete('/asignarRecursos/{evento_id}/{recurso_id}', [AsignarRecursoController::class, 'destroy'])->name('asignarRecursos.destroy');
+    
 });

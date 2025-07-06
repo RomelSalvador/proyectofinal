@@ -35,7 +35,7 @@
 
             <div class="text-center mt-4">
                 <a href="{{ route('inscripciones.index') }}" class="btn btn-warning rounded-pill px-4 me-2">Cancelar</a>
-                <button type="submit" class="btn btn-primary rounded-pill px-4 ms-2">Guardar Cambios</button>
+                <button type="submit" class="btn btn-primary rounded-pill px-4 ms-2">Actualizar</button>
             </div>
         </form>
     </div>

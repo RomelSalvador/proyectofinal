@@ -68,24 +68,51 @@
 
                 <!-- Menú derecho -->
                 <ul class="navbar-nav ms-auto">
-                    @guest
-                        @if (Route::has('login'))
-                            <li class="nav-item">
-                                <a class="nav-link text-white" href="{{ route('login') }}">Login</a>
-                            </li>
-                        @endif
-                        @if (Route::has('register'))
-                            <li class="nav-item">
-                                <a class="nav-link text-white" href="{{ route('register') }}">Registrarse</a>
-                            </li>
-                        @endif
+                @guest
+                    @if (Route::has('login'))
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="{{ route('login') }}">Login</a>
+                        </li>
+                @endif
+                    @if (Route::has('register'))
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="{{ route('register') }}">Registrarse</a>
+                        </li>
+                @endif
                     @else
+                    <!-- Notificaciones -->
+                    <li class="nav-item dropdown">
+                        <a id="notificationsDropdown" class="nav-link text-white position-relative" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-bell-fill fs-5"></i>
+                    @php
+                        $unreadCount = Auth::user()->unreadNotifications->count();
+                    @endphp
+                    @if($unreadCount > 0)
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                            {{ $unreadCount }}
+                        </span>
+                    @endif
+                        </a>
+                            <div class="dropdown-menu dropdown-menu-end">
+                                @forelse(Auth::user()->notifications->take(5) as $notification)
+                        <a class="dropdown-item" href="#">
+                            {{ $notification->data['mensaje'] ?? 'Nueva notificación' }}
+                        <br>
+                            <small class="text-muted">{{ $notification->created_at->diffForHumans() }}</small>
+                        </a>
+                        @empty
+                            <span class="dropdown-item text-muted">No tienes notificaciones.</span>
+                        @endforelse
+                        <div class="dropdown-divider"></div>
+                            <a class="dropdown-item text-primary" href="#">Ver todas</a>
+                        </div>
+                    </li>
+
                         <li class="nav-item dropdown">
                             <a id="navbarDropdown" class="nav-link dropdown-toggle text-white d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown">
                                 <i class="bi bi-person-circle fs-4"></i> {{ Auth::user()->name }}
                             </a>
                             <div class="dropdown-menu dropdown-menu-end">
-                                {{-- <a class="dropdown-item" href="#">Mi perfil</a> --}}
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item text-danger" href="{{ route('logout') }}"
                                 onclick="event.preventDefault(); document.getElementById('logout-form').submit();">

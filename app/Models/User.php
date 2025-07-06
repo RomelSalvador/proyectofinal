@@ -2,34 +2,36 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
+
+/**
+ * @mixin \Illuminate\Notifications\Notifiable
+ * @method void notify(\Illuminate\Notifications\Notification $notification)
+ */
+
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable; 
 
     /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
+     * Los atributos que se pueden asignar masivamente.
      */
     protected $fillable = [
-    'nombre',
-    'apellido',
-    'telefono',
-    'rol',
-    'email',
-    'password',
+        'nombre',
+        'apellido',
+        'telefono',
+        'rol',
+        'email',
+        'password',
     ];
 
     /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
+     * Atributos ocultos en las respuestas JSON.
      */
     protected $hidden = [
         'password',
@@ -37,16 +39,18 @@ class User extends Authenticatable
     ];
 
     /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
+     * Atributos que deben ser convertidos a tipos nativos.
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'password' => 'hashed',
+        'password' => 'hashed', // Laravel 10+ soporta esto
     ];
 
-    public function inscripciones(){
-    return $this->hasMany(Inscripcion::class);
+    /**
+     * Relación con las inscripciones del usuario.
+     */
+    public function inscripciones()
+    {
+        return $this->hasMany(Inscripcion::class);
     }
 }

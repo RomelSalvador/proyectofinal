@@ -10,6 +10,7 @@ class Evento extends Model
     use HasFactory;
 
     protected $fillable = [
+        'imagen',
         'titulo',
         'descripcion',
         'tipo',
@@ -17,20 +18,19 @@ class Evento extends Model
         'hora',
         'ubicacion',
         'aforo',
+        'precio',  
         'estado',
     ];
-
 
     public function inscripciones()
     {
         return $this->hasMany(Inscripcion::class);
     }
 
-    public function recursos(){
-    return $this->belongsToMany(Recurso::class, 'evento_recursos')
-                ->withPivot('cantidad')
-                ->withTimestamps();
+    public function recursos()
+    {
+        return $this->belongsToMany(Recurso::class, 'evento_recursos')
+                    ->withPivot('cantidad')
+                    ->withTimestamps();
     }
-
-    
 }
