@@ -37,8 +37,6 @@ class AsignarRecursoController extends Controller
         ]);
 
         $recurso = Recurso::findOrFail($request->recurso_id);
-
-        // Sumamos todas las cantidades asignadas del recurso
         $cantidadAsignada = EventoRecurso::where('recurso_id', $recurso->id)->sum('cantidad');
         $cantidadDisponible = $recurso->cantidad - $cantidadAsignada;
 

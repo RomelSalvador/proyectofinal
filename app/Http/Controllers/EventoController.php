@@ -121,12 +121,16 @@ class EventoController extends Controller
         return redirect()->route('eventos.index')->with('success', 'Evento eliminado correctamente.');
     }
 
-    public function listarDisponibles()
-    {
-        $eventos = Evento::where('estado', 'activo')->get();
-        return view('eventos.eventosDisponibles', compact('eventos'));
-    }
+    public function listarDisponibles(Request $request){
+    $tipo = $request->query('tipo'); 
+    $eventos = Evento::where('estado', 'activo')
+                    ->when($tipo, function ($query) use ($tipo) {
+                        $query->where('tipo', $tipo);
+                    })
+                    ->get();
 
+    return view('eventos.eventosDisponibles', compact('eventos', 'tipo'));
+    }
     private function autorizarAdmin()
     {
         if (Auth::user()->rol !== 'administrador') {
